@@ -1,0 +1,8 @@
+RateIt! is a small tool to rate - among everything - chicks. It was created for users in highly sound-sensitive areas (such as libraries) to have a possibility of sharing their rating.
+
+Rating Rules
+~~~~~~~~
+1. A 10 is highest, 5 is lowest rating. Off scale is xD (under 5).
+2. When in doubt, always round down.
+3. A group is always rated from left to right (from your point of view), near to far.
+4. I dare you to rate 10!

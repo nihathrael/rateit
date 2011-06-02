@@ -1,3 +1,4 @@
 import gtktrayicon
 
-gtktrayicon.paint_icon()
+if __name__ == '__main__':
+    gtktrayicon.GUI()
