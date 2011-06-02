@@ -50,6 +50,7 @@ class GUI:
         connectDialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
         
         entry = gtk.Entry()
+        entry.set_text(self.connectTo)
         entry.show()
         connectDialog.vbox.add(entry)
         
