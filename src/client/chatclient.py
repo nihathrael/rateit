@@ -4,7 +4,6 @@ import select
 import cPickle
 import socket
 import struct
-from receiverthread import ReceiverThread
 
 marshall = cPickle.dumps
 unmarshall = cPickle.loads

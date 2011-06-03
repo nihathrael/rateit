@@ -1,4 +1,4 @@
-RateIt! is a small tool to rate - among everything - chicks. It was created for users in highly sound-sensitive areas (such as libraries) to have a possibility of sharing their rating.
+RateIt! is a small tool to rate - among everything - chicks. It was created for users in highly sound-sensitive areas (such as libraries) to have the possibility of sharing their rating in real-time.
 
 Rating Rules
 ~~~~~~~~
