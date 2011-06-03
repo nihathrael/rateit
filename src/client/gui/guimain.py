@@ -24,7 +24,8 @@ class GUI(threading.Thread):
     def quit_cb(self, widget, data = None):
         if data:
             data.set_visible(False)
-        self.client.quit()
+        if self.client:
+            self.client.quit()
         gtk.main_quit()
 
     def cb(self, widget, data=None):
@@ -34,6 +35,7 @@ class GUI(threading.Thread):
         aboutDialog = gtk.AboutDialog()
         aboutDialog.set_title("RateIt!")
         aboutDialog.set_name("RateIt!")
+        aboutDialog.set_destroy_with_parent(gtk.DIALOG_DESTROY_WITH_PARENT)
 
         file = open(os.path.join(utils.resources.get_resource_path(),'rating-rules.txt'))
         aboutDialog.set_comments(file.read())
