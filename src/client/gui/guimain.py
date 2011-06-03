@@ -11,12 +11,12 @@ import threading
 from copy import deepcopy
 
 class GUI(threading.Thread):
-    def __init__(self, client):
+    def __init__(self):
         super(GUI, self).__init__()
         self.paint_icon()
         self.connectTo = ''
         # Set the Chatclient
-        self.client = client
+        self.client = None
 
     def run(self):
         gtk.main()
@@ -24,7 +24,7 @@ class GUI(threading.Thread):
     def quit_cb(self, widget, data = None):
         if data:
             data.set_visible(False)
-        self.client.flag = False
+        self.client.flag = True
         gtk.main_quit()
 
     def cb(self, widget, data=None):
@@ -66,11 +66,11 @@ class GUI(threading.Thread):
             if res == gtk.RESPONSE_OK:
                 connectDialog.hide()
                 self.connectTo = entry.get_text()
+                self.connect_to(self.connectTo)
             elif res == gtk.RESPONSE_CANCEL:
                 connectDialog.hide()
 
         connectDialog.connect("response", ok)
-
         connectDialog.show()
 
     def popup_menu_cb(self, widget, button, time, data = None):
