@@ -7,6 +7,7 @@ import gtk
 import os
 
 import utils.resources
+import utils.settings
 import threading
 from copy import deepcopy
 
@@ -14,7 +15,6 @@ class GUI(threading.Thread):
     def __init__(self):
         super(GUI, self).__init__()
         self.paint_icon()
-        self.connectTo = ''
         # Set the Chatclient
         self.client = None
 
@@ -37,9 +37,11 @@ class GUI(threading.Thread):
 
         file = open(os.path.join(utils.resources.get_resource_path(),'rating-rules.txt'))
         aboutDialog.set_comments(file.read())
+        file.close()
 
         file = open(os.path.join(utils.resources.get_resource_path(),'gpl-3.0.txt'))
         aboutDialog.set_license(file.read())
+        file.close()
 
         def close(w, res):
                 if res == gtk.RESPONSE_CANCEL:
@@ -47,9 +49,7 @@ class GUI(threading.Thread):
         aboutDialog.connect("response", close)
 
         aboutDialog.set_authors(["Thomas Kinnen","Moritz Beller"])
-
         aboutDialog.show()
-        return aboutDialog
 
 
     def show_connect(self, widget, data = None):
@@ -58,15 +58,16 @@ class GUI(threading.Thread):
         connectDialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
 
         entry = gtk.Entry()
-        entry.set_text(self.connectTo)
+        entry.set_text(utils.settings.a.server)
         entry.show()
         connectDialog.vbox.add(entry)
 
         def ok(w, res):
             if res == gtk.RESPONSE_OK:
                 connectDialog.hide()
-                self.connectTo = entry.get_text()
-                self.connect_to(self.connectTo)
+                utils.settings.a.server = entry.get_text()
+                self.connect_to(utils.settings.a.server)
+                utils.settings.a.save_settings()
             elif res == gtk.RESPONSE_CANCEL:
                 connectDialog.hide()
 

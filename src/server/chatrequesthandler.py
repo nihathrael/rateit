@@ -1,5 +1,7 @@
 import SocketServer
 import pynotify
+import sys
+
 class ChatRequestHandler(SocketServer.StreamRequestHandler):
 	def handle(self):
 		self.sendWelcome()

@@ -4,6 +4,9 @@ import select
 import cPickle
 import socket
 import struct
+import time
+
+import utils.settings
 
 marshall = cPickle.dumps
 unmarshall = cPickle.loads
@@ -20,7 +23,6 @@ class ChatClient(object):
         self.connected = False
         # Initial prompt
         self.prompt = ">"
-        self.name = "moritz"
 
     def connect(self, url):
         host, port = url.split(":")
@@ -28,11 +30,10 @@ class ChatClient(object):
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((host, int(port)))
             print 'Connected to chat server@%d' % int(port)
-            self.prompt = '[' + '@' + self.name + ']> '
+            self.prompt = '[' + '@' + utils.settings.a.name + ']> '
             self.connected = True
         except socket.error, e:
             print 'Could not connect to chat server @%d' % int(port)
-            sys.exit(1)
             
     # Tear down connection
     def disconnect(self):
