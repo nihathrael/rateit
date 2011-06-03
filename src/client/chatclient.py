@@ -4,14 +4,13 @@ import select
 import cPickle
 import socket
 import struct
-from threading import Thread
 
 marshall = cPickle.dumps
 unmarshall = cPickle.loads
 
 BUFSIZ = 1024
 
-class ChatClient(Thread):
+class ChatClient(object):
     """ A simple command line chat client using select """
 
     def __init__(self, name, host='localhost', port=8080):

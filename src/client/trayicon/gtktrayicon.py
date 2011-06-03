@@ -8,12 +8,15 @@ import os
 
 import utils.resources
 import threading
+from copy import deepcopy
 
 class GUI(threading.Thread):
     def __init__(self):
         super(GUI, self).__init__()
         self.window = self.paint_icon()
         self.connectTo = ''
+        # Set the Chatclient
+        self.client = None
 
     def run(self):
         gtk.main()
@@ -84,8 +87,11 @@ class GUI(threading.Thread):
         menuItem = gtk.MenuItem("xD")
         menu.append(menuItem)
 
+
+
         for curRating in xrange(5, 11):
             menuItem = gtk.MenuItem(str(curRating))
+            menuItem.connect('activate', Callback(self.send, curRating))
             menu.append(menuItem)
 
         menuItem = gtk.MenuItem("Connect To")
@@ -107,8 +113,8 @@ class GUI(threading.Thread):
         pass
 
     def send(self, rating):
-        #send rating to API
-        pass
+        print "SEND!"
+        self.client.send("Rate: %s\n" % rating)
 
     def paint_icon(self):
         statusIcon = gtk.StatusIcon()
@@ -122,3 +128,15 @@ class GUI(threading.Thread):
 
         return statusIcon
 
+
+"""Simple callback class, which can handle can store a given set of parameters.
+
+Useful for menuItems"""
+class Callback(object):
+
+    def __init__(self, cb, *args):
+        self.cb = cb
+        self.args = args
+
+    def __call__(self, x):
+        self.cb(self.args)

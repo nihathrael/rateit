@@ -6,4 +6,4 @@ Created on 02.06.2011
 import os
 
 def get_resource_path():
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'data'))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data'))
