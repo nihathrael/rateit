@@ -10,7 +10,6 @@ from twisted.internet import reactor
 
 import utils.resources
 import utils.settings
-import threading
 from copy import deepcopy
 
 class GUI():

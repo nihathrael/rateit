@@ -4,20 +4,18 @@ Created on 03.06.2011
 @author: moritz
 '''
 from twisted.internet import reactor
-from twisted.internet.protocol import Factory, Protocol
+from twisted.internet.protocol import Factory, Protocol, ClientFactory
 from twisted.internet.endpoints import TCP4ClientEndpoint
 import pynotify
-import threading
 
-
-class Greeter(Protocol):
+class RateItClient(Protocol):
     def sendMessage(self, msg):
-        self.transport.write("MESSAGE %s\n" % msg)
+        self.transport.write("%s\n" % msg)
     def dataReceived(self, data):
-        print data
         self.showNotification(data)
     def connectionMade(self):
         self.transport.write("Hello server, I am the client!\r\n")
+    
 
     def showNotification(self, text):
         print "Text received:", text
@@ -28,21 +26,35 @@ class Greeter(Protocol):
     
         if not n.show():
             print "Failed to send notification"
+            
+class EchoFactory(ClientFactory):
+    protocol = RateItClient
+    
+    def __init__(self):
+        self.obj = self.protocol()
+    
+    def buildProtocol(self, addr):
+        self.obj = ClientFactory.buildProtocol(self, addr)
+        return self.obj
+    
+    # works via delegation
+    def send(self, msg):
+        self.obj.sendMessage(msg)
+        
+                
 
 class TwistedClient():
     def __init__(self):
         pynotify.init("RateIt! Notifications")
-        self.factory = Factory()
-        self.factory.protocol = Greeter
-        
+        self.factory = EchoFactory()
+
     def connect(self, url):
         host, port = url.split(":")
-        point = TCP4ClientEndpoint(reactor, host, int(port))
-        self.d = point.connect(self.factory)
-        
-    # works via delegation
+        reactor.connectTCP(host, int(port), self.factory)
+    
+    # works via delegation        
     def send(self, msg):
-        self.factory.protocol.sendMessage(self, msg)
+        self.factory.send(msg)
                 
     def quit(self):
         pass
