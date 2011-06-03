@@ -21,7 +21,7 @@ class Echo(Protocol):
         self.factory.clients.remove(self)
             
     def dataReceived(self, data):
-        # delegate call to notify all observers of incoming event
+        #delegate call to notify all observers of incoming event
         #self.factory.notifyObservers(data.rstrip())
         pass
 

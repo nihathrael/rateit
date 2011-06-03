@@ -3,7 +3,7 @@ Created on 03.06.2011
 
 @author: moritz
 '''
-from twisted.internet import gtk2reactor
+from twisted.internet import reactor
 from twisted.internet.protocol import Factory, Protocol
 from twisted.internet.endpoints import TCP4ClientEndpoint
 import pynotify
@@ -29,19 +29,24 @@ class Greeter(Protocol):
         if not n.show():
             print "Failed to send notification"
 
-class ChatClient(threading.Thread):
+class TwistedClient():
     def __init__(self):
-        super(ChatClient, self).__init__()
         pynotify.init("RateIt! Notifications")
         self.factory = Factory()
         self.factory.protocol = Greeter
         
     def connect(self, url):
         host, port = url.split(":")
-        point = TCP4ClientEndpoint(gtk2reactor, host, int(port))
+        point = TCP4ClientEndpoint(reactor, host, int(port))
         self.d = point.connect(self.factory)
         
     # works via delegation
     def send(self, msg):
         self.factory.protocol.sendMessage(self, msg)
+        
+    def run(self):
+        reactor.run()
+        
+    def quit(self):
+        pass
         

@@ -1,6 +1,9 @@
 import sys
 
-from chatclient import ChatClient
+from twisted.internet import gtk2reactor
+gtk2reactor.install()
+import twisted.internet.reactor
+from twistedclient import TwistedClient
 from gui.guimain import GUI
 
 if __name__ == "__main__":
@@ -8,6 +11,6 @@ if __name__ == "__main__":
     gui = GUI()
     gui.start()
 
-    client = ChatClient()
+    client = TwistedClient()
     gui.client = client
     client.run()
