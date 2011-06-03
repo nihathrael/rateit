@@ -14,11 +14,12 @@ class Echo(Protocol):
             self.transport.write("Too many connections, try later") 
             self.transport.loseConnection()
             
-        print "And another successful connection established(tm)"
+        print "And another successful connection established"
             
     def connectionLost(self, reason):
         Protocol.connectionLost(self, reason=reason)
         self.factory.clients.remove(self)
+        print "Byebye"
             
     def dataReceived(self, data):
         #delegate call to notify all observers of incoming event

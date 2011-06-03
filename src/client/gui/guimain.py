@@ -115,12 +115,11 @@ class GUI():
     def connect_to(self, connect):
         print "connect to"
         reactor.callFromThread(self.client.connect,connect)
-        #self.client.connect(connect)
         print "connected"
 
     def send(self, rating):
         print "SEND!"
-        self.client.send("Rate: %s\n" % rating)
+        self.client.send("[" + utils.settings.a.name + "] Rate: %s\n" % rating)
 
     def paint_icon(self):
         statusIcon = gtk.StatusIcon()

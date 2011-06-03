@@ -10,7 +10,6 @@ class Settings():
     def __init__(self):
         self.configfile = self.__get_config_path()
         self.server = ""
-        self.name = getpass.getuser()
     
     def __get_config_path(self):
         return os.path.expanduser(os.path.join("~",".rateit"))
@@ -19,8 +18,9 @@ class Settings():
         try:
             file = open(self.configfile)
             self.server = file.readline().rstrip()
-            if file.readline().rstrip():
-                self.name = file.readline().rstrip()
+            self.name = file.readline().rstrip()
+            if self.name == "":
+                self.name = getpass.getuser()
             file.close()
         except IOError, err:
             print "No configuration file " + self.configfile + " found."

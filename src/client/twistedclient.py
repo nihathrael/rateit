@@ -4,17 +4,19 @@ Created on 03.06.2011
 @author: moritz
 '''
 from twisted.internet import reactor
-from twisted.internet.protocol import Factory, Protocol, ClientFactory
-from twisted.internet.endpoints import TCP4ClientEndpoint
+from twisted.internet.protocol import Protocol, ClientFactory
 import pynotify
+
+import utils.settings
 
 class RateItClient(Protocol):
     def sendMessage(self, msg):
-        self.transport.write("%s\n" % msg)
+        if self.connected:
+            self.transport.write("%s\n" % msg)
     def dataReceived(self, data):
         self.showNotification(data)
     def connectionMade(self):
-        self.transport.write("Hello server, I am the client!\r\n")
+        self.transport.write(utils.settings.a.name + " joined RateIt!\r\n")
     
 
     def showNotification(self, text):
@@ -27,7 +29,10 @@ class RateItClient(Protocol):
         if not n.show():
             print "Failed to send notification"
             
-class EchoFactory(ClientFactory):
+# An implementation of a factory is needed as we need to store a reference 
+# to the actual RateItClient object, otherwise we won't be able to delegate 
+# method calls to it
+class RateItFactory(ClientFactory):
     protocol = RateItClient
     
     def __init__(self):
@@ -41,12 +46,15 @@ class EchoFactory(ClientFactory):
     def send(self, msg):
         self.obj.sendMessage(msg)
         
+    def loseConnection(self):
+        self.obj.transport.loseConnection()
+        
                 
 
 class TwistedClient():
     def __init__(self):
-        pynotify.init("RateIt! Notifications")
-        self.factory = EchoFactory()
+        pynotify.init("RateIt Notifications")
+        self.factory = RateItFactory()
 
     def connect(self, url):
         host, port = url.split(":")
@@ -57,5 +65,5 @@ class TwistedClient():
         self.factory.send(msg)
                 
     def quit(self):
-        pass
+        self.factory.loseConnection()
         
