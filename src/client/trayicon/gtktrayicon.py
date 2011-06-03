@@ -109,8 +109,9 @@ class GUI(threading.Thread):
         return menu
 
     def connect_to(self, connect):
-        # call to API
-        pass
+        print "connect to"
+        self.client.connect(connect)
+        print "connected"
 
     def send(self, rating):
         print "SEND!"

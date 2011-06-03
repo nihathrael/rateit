@@ -8,6 +8,6 @@ if __name__ == "__main__":
     gui = GUI()
     gui.start()
 
-    client = ChatClient("niha", "localhost", 8080)
+    client = ChatClient()
     gui.client = client
     client.run()
