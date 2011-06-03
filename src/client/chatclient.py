@@ -4,16 +4,18 @@ import select
 import cPickle
 import socket
 import struct
+from threading import Thread
 
 marshall = cPickle.dumps
 unmarshall = cPickle.loads
 
 BUFSIZ = 1024
 
-class ChatClient(object):
+class ChatClient(Thread):
     """ A simple command line chat client using select """
 
     def __init__(self, name, host='localhost', port=8080):
+        super(ChatClient, self).__init__()
         self.name = name
         # Quit flag
         self.flag = False
@@ -31,16 +33,18 @@ class ChatClient(object):
             print 'Could not connect to chat server @%d' % self.port
             sys.exit(1)
 
-        self.cmdloop()
-
-    def cmdloop(self):
+    def run(self):
+        print "run"
         while not self.flag:
+            print "while..."
             try:
                 sys.stdout.write(self.prompt)
                 sys.stdout.flush()
 
                 # Wait for input from stdin & socket
+                print "Before select"
                 inputready, outputready,exceptrdy = select.select([0, self.sock], [],[])
+                print "after select"
 
                 for i in inputready:
                     if i == 0:
@@ -56,17 +60,21 @@ class ChatClient(object):
                             sys.stdout.write(data + '\n')
                             sys.stdout.flush()
 
-            except KeyboardInterrupt:
+            except:
                 print 'Interrupted.'
                 self.sock.close()
                 break
+        print "endrun"
 
     def send(self, text):
+        print "send"
         sockFile = self.sock.makefile()
         sockFile.write(text + "\n")
         sockFile.flush()
 
     def receive(self):
+        print "receive"
         sockFile = self.sock.makefile()
         buf = sockFile.readline()
+        print "buf"
         return buf
