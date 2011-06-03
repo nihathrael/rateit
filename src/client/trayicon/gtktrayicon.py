@@ -72,9 +72,6 @@ class GUI(threading.Thread):
 
         connectDialog.show()
 
-    def ret_val(self, text):
-        return text
-
     def popup_menu_cb(self, widget, button, time, data = None):
         if button == 3:
             if data:
@@ -87,12 +84,13 @@ class GUI(threading.Thread):
         menuItem = gtk.MenuItem("xD")
         menu.append(menuItem)
 
-
-
         for curRating in xrange(5, 11):
             menuItem = gtk.MenuItem(str(curRating))
             menuItem.connect('activate', Callback(self.send, curRating))
             menu.append(menuItem)
+            
+        menuItem = gtk.SeparatorMenuItem()
+        menu.append(menuItem)
 
         menuItem = gtk.MenuItem("Connect To")
         menuItem.connect('activate', self.show_connect, statusIcon)
