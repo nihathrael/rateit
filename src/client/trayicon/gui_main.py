@@ -11,12 +11,12 @@ import threading
 from copy import deepcopy
 
 class GUI(threading.Thread):
-    def __init__(self):
+    def __init__(self, client):
         super(GUI, self).__init__()
         self.paint_icon()
         self.connectTo = ''
         # Set the Chatclient
-        self.client = None
+        self.client = client
 
     def run(self):
         gtk.main()
@@ -24,6 +24,7 @@ class GUI(threading.Thread):
     def quit_cb(self, widget, data = None):
         if data:
             data.set_visible(False)
+        self.client.flag = False
         gtk.main_quit()
 
     def cb(self, widget, data=None):
@@ -124,8 +125,6 @@ class GUI(threading.Thread):
         statusIcon.set_tooltip("RateIt!")
         statusIcon.connect('popup-menu', self.popup_menu_cb, menu)
         statusIcon.set_visible(True)
-
-        return statusIcon
 
 
 """Simple callback class, which can handle can store a given set of parameters.
