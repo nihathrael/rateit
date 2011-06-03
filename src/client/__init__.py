@@ -7,10 +7,12 @@ from twistedclient import TwistedClient
 from gui.guimain import GUI
 
 if __name__ == "__main__":
-    print "starting gui"
-    gui = GUI()
-    gui.start()
 
     client = TwistedClient()
+    #client.run()
+    
+    print "starting gui"
+    gui = GUI()
     gui.client = client
-    client.run()
+    twisted.internet.reactor.run()
+    gui.run()

@@ -6,14 +6,15 @@ Created on 02.06.2011
 import gtk
 import os
 
+from twisted.internet import reactor
+
 import utils.resources
 import utils.settings
 import threading
 from copy import deepcopy
 
-class GUI(threading.Thread):
+class GUI():
     def __init__(self):
-        super(GUI, self).__init__()
         self.paint_icon()
         # Set the Chatclient
         self.client = None
@@ -27,6 +28,7 @@ class GUI(threading.Thread):
         if self.client:
             self.client.quit()
         gtk.main_quit()
+        reactor.stop()
 
     def cb(self, widget, data=None):
         print 'cb'
@@ -113,7 +115,8 @@ class GUI(threading.Thread):
 
     def connect_to(self, connect):
         print "connect to"
-        self.client.connect(connect)
+        reactor.callFromThread(self.client.connect,connect)
+        #self.client.connect(connect)
         print "connected"
 
     def send(self, rating):

@@ -43,10 +43,7 @@ class TwistedClient():
     # works via delegation
     def send(self, msg):
         self.factory.protocol.sendMessage(self, msg)
-        
-    def run(self):
-        reactor.run()
-        
+                
     def quit(self):
         pass
         

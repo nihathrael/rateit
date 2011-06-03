@@ -22,8 +22,8 @@ class Echo(Protocol):
             
     def dataReceived(self, data):
         #delegate call to notify all observers of incoming event
-        #self.factory.notifyObservers(data.rstrip())
-        pass
+        self.factory.notifyObservers(data.rstrip())
+        #pass
 
 class RateServerFactory(Factory):
     protocol = Echo
