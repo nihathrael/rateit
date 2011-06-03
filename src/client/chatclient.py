@@ -4,7 +4,6 @@ import select
 import cPickle
 import socket
 import struct
-import time
 
 import utils.settings
 
@@ -80,14 +79,16 @@ class ChatClient(object):
         self.flag = True
 
     def send(self, text):
-        print "send"
-        sockFile = self.sock.makefile()
-        sockFile.write(text + "\n")
-        sockFile.flush()
+        if self.connected:
+            print "send"
+            sockFile = self.sock.makefile()
+            sockFile.write(text + "\n")
+            sockFile.flush()
 
     def receive(self):
-        print "receive"
-        sockFile = self.sock.makefile()
-        buf = sockFile.readline()
-        print "buf"
-        return buf
+        if self.connected:
+            print "receive"
+            sockFile = self.sock.makefile()
+            buf = sockFile.readline()
+            print "buf"
+            return buf
