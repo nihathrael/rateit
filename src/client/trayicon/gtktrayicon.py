@@ -13,7 +13,7 @@ from copy import deepcopy
 class GUI(threading.Thread):
     def __init__(self):
         super(GUI, self).__init__()
-        self.window = self.paint_icon()
+        self.paint_icon()
         self.connectTo = ''
         # Set the Chatclient
         self.client = None
