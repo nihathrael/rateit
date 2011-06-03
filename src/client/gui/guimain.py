@@ -24,7 +24,7 @@ class GUI(threading.Thread):
     def quit_cb(self, widget, data = None):
         if data:
             data.set_visible(False)
-        self.client.flag = True
+        self.client.quit()
         gtk.main_quit()
 
     def cb(self, widget, data=None):

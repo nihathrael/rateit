@@ -33,7 +33,11 @@ class ChatClient(object):
         except socket.error, e:
             print 'Could not connect to chat server @%d' % int(port)
             sys.exit(1)
-
+            
+    # Tear down connection
+    def disconnect(self):
+        self.sock.close()
+        self.connected = False
 
     def run(self):
         print "run"
@@ -67,6 +71,12 @@ class ChatClient(object):
                     self.sock.close()
                     break
         print "endrun"
+        
+    # Terminate thread
+    def quit(self):
+        if self.connected:
+            self.disconnect()
+        self.flag = True
 
     def send(self, text):
         print "send"
