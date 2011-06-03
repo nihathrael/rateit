@@ -1,18 +1,7 @@
-from chatthreadedserver import ChatThreadedServer
-from chatrequesthandler import ChatRequestHandler
+from twistedserver import RateServerFactory
 
-import sys
-import pynotify
+from twisted.internet import reactor
 
 if __name__ == '__main__':
-	server = ChatThreadedServer(('localhost', 8080), ChatRequestHandler)
-
-	if not pynotify.init("Timekpr notification"):
-		sys.exit(1)
-
-	try:
-		print "Server starting.  Now waiting."
-		server.serve_forever()
-	except:
-		server.shutdown()
-		print "Shutting down... waiting for all clients to close."
+		reactor.listenTCP(8080, RateServerFactory())
+		reactor.run()

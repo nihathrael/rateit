@@ -34,6 +34,3 @@ class RateServerFactory(Factory):
     def notifyObservers(self, data):
         for aClient in self.clients:
             aClient.transport.write(data)
-    
-reactor.listenTCP(8080, RateServerFactory())
-reactor.run()
