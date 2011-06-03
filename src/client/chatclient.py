@@ -20,17 +20,18 @@ class ChatClient(object):
         self.connected = False
         # Initial prompt
         self.prompt = ">"
+        self.name = "moritz"
 
     def connect(self, url):
         host, port = url.split(":")
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((host, int(port)))
-            print 'Connected to chat server@%d' % self.port
+            print 'Connected to chat server@%d' % int(port)
             self.prompt = '[' + '@' + self.name + ']> '
             self.connected = True
         except socket.error, e:
-            print 'Could not connect to chat server @%d' % self.port
+            print 'Could not connect to chat server @%d' % int(port)
             sys.exit(1)
 
 

@@ -83,6 +83,7 @@ class GUI(threading.Thread):
         menu = gtk.Menu()
 
         menuItem = gtk.MenuItem("xD")
+        menuItem.connect('activate', Callback(self.send, "xD"))
         menu.append(menuItem)
 
         for curRating in xrange(5, 11):
