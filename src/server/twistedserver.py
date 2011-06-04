@@ -22,7 +22,7 @@ class Echo(Protocol):
             
     def dataReceived(self, data):
         # notify all observers of incoming event
-        self.factory.notifyObservers(data.rstrip(), self)
+        self.factory.notifyObservers(data.rstrip())
 
 class RateServerFactory(Factory):
     protocol = Echo
@@ -30,7 +30,6 @@ class RateServerFactory(Factory):
     def __init__(self):
         self.clients = []
         
-    def notifyObservers(self, data, sender):
+    def notifyObservers(self, data):
         for aClient in self.clients:
-            if aClient != sender:
-                aClient.transport.write(data)
+            aClient.transport.write(data)
