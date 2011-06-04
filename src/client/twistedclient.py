@@ -4,7 +4,7 @@ Created on 03.06.2011
 @author: moritz
 '''
 from twisted.internet import reactor
-from twisted.internet.protocol import Protocol, ClientFactory
+from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 import pynotify
 
 import utils.settings
@@ -14,8 +14,10 @@ class RateItClient(Protocol):
     def sendMessage(self, msg):
         if self.connected:
             self.transport.write("%s\n" % msg)
+            
     def dataReceived(self, data):
         gui.notification.showNotification(data)
+        
     def connectionMade(self):
         self.transport.write(utils.settings.a.name + " joined RateIt!\r\n")
     
@@ -23,14 +25,14 @@ class RateItClient(Protocol):
 # An implementation of a factory is needed as we need to store a reference 
 # to the actual RateItClient object, otherwise we won't be able to delegate 
 # method calls to it
-class RateItFactory(ClientFactory):
+class RateItFactory(ReconnectingClientFactory):
     protocol = RateItClient
     
     def __init__(self):
         self.obj = self.protocol()
     
     def buildProtocol(self, addr):
-        self.obj = ClientFactory.buildProtocol(self, addr)
+        self.obj = ReconnectingClientFactory.buildProtocol(self, addr)
         return self.obj
     
     # works via delegation
@@ -39,7 +41,6 @@ class RateItFactory(ClientFactory):
         
     def loseConnection(self):
         self.obj.transport.loseConnection()
-        
                 
 
 class TwistedClient():

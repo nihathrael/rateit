@@ -19,11 +19,10 @@ class Echo(Protocol):
     def connectionLost(self, reason):
         Protocol.connectionLost(self, reason=reason)
         self.factory.clients.remove(self)
-        print "Byebye"
             
     def dataReceived(self, data):
-        #delegate call to notify all observers of incoming event
-        self.factory.notifyObservers(data.rstrip())
+        # notify all observers of incoming event
+        self.factory.notifyObservers(data.rstrip(), self)
 
 class RateServerFactory(Factory):
     protocol = Echo
@@ -31,6 +30,7 @@ class RateServerFactory(Factory):
     def __init__(self):
         self.clients = []
         
-    def notifyObservers(self, data):
+    def notifyObservers(self, data, sender):
         for aClient in self.clients:
-            aClient.transport.write(data)
+            if aClient != sender:
+                aClient.transport.write(data)
