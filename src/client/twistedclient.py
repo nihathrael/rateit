@@ -8,26 +8,17 @@ from twisted.internet.protocol import Protocol, ClientFactory
 import pynotify
 
 import utils.settings
+import gui.notification
 
 class RateItClient(Protocol):
     def sendMessage(self, msg):
         if self.connected:
             self.transport.write("%s\n" % msg)
     def dataReceived(self, data):
-        self.showNotification(data)
+        gui.notification.showNotification(data)
     def connectionMade(self):
         self.transport.write(utils.settings.a.name + " joined RateIt!\r\n")
     
-
-    def showNotification(self, text):
-        print "Text received:", text
-        n = pynotify.Notification(text)
-        n.set_urgency(pynotify.URGENCY_CRITICAL)
-        n.set_timeout(15000) # 10 seconds
-        n.set_category("device")
-    
-        if not n.show():
-            print "Failed to send notification"
             
 # An implementation of a factory is needed as we need to store a reference 
 # to the actual RateItClient object, otherwise we won't be able to delegate 
