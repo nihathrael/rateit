@@ -56,8 +56,8 @@ class LightWeightProtocol(Protocol):
             # (should never happen usually)
             return
         
-        message = self.checkId(data)
-        if message == False:
+        data = self.checkId(data)
+        if data == False:
             return
         
         if self.curState == ProtocolState.CO_OK:
@@ -66,7 +66,7 @@ class LightWeightProtocol(Protocol):
             self.transport.write("Joined channel " + data)
         elif self.curState == ProtocolState.CH_IN:
             # notify all observers of incoming event
-            self.factory.notifyObservers(message, self.channel)
+            self.factory.notifyObservers(data, self.channel)
 
 class RateServerFactory(Factory):
     protocol = LightWeightProtocol
