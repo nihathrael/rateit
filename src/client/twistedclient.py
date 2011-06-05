@@ -10,30 +10,33 @@ import pynotify
 import utils.settings
 import gui.guiutils
 
-# this resembles a C-style enum for our state machine
-class ProtocolState:
-    CO_NO=0
-    CO_OK=1
-    CH_SENT=2
-    CH_IN=3
+import re
+
+from  protocol.protocolstates import ProtocolState 
 
 class RateItClient(Protocol):
     def __init__(self):
         self.curState=ProtocolState.CO_NO
+        self.id=None
         
     def sendMessage(self, msg):
         if self.connected:
-            self.transport.write("%s\n" % msg)
+            self.transport.write("%s:%s" % (self.id, msg))
             
     def dataReceived(self, data):
+        data = data.rstrip()
+        
         if self.curState == ProtocolState.CH_IN:
             gui.guiutils.GuiUtils.showNotification(data)
         elif self.curState == ProtocolState.CO_OK:
+            parser = re.compile("ID: (.*)")
+            match = parser.match(data)
+            self.id = match.group(1)
             # pass on channel to join
-            self.transport.write("stabi")
+            self.sendMessage("stabi")
             self.curState = ProtocolState.CH_SENT
         elif self.curState == ProtocolState.CH_SENT:
-            self.transport.write(utils.settings.a.name + " joined RateIt!\r\n")
+            self.sendMessage(utils.settings.a.name + " joined RateIt!\r\n")
             self.curState = ProtocolState.CH_IN
         
     def connectionMade(self):
