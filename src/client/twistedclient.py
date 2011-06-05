@@ -8,7 +8,7 @@ from twisted.internet.protocol import Protocol, ReconnectingClientFactory
 import pynotify
 
 import utils.settings
-import gui.notification
+import gui.guiutils
 
 class RateItClient(Protocol):
     def sendMessage(self, msg):
@@ -16,7 +16,7 @@ class RateItClient(Protocol):
             self.transport.write("%s\n" % msg)
             
     def dataReceived(self, data):
-        gui.notification.showNotification(data)
+        gui.guiutils.GuiUtils.showNotification(data)
         
     def connectionMade(self):
         self.transport.write(utils.settings.a.name + " joined RateIt!\r\n")

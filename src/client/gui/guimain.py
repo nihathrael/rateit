@@ -11,7 +11,7 @@ from twisted.internet import reactor
 import utils.resources
 import utils.settings
 
-import gui.notification
+import gui.guiutils
 
 class GUI():
     def __init__(self):
@@ -131,7 +131,7 @@ class GUI():
         statusIcon.set_tooltip("RateIt!")
         statusIcon.connect('popup-menu', self.popup_menu_cb, menu)
         statusIcon.set_visible(True)
-        gui.notification.statusIcon = statusIcon
+        gui.guiutils.GuiUtils.statusIcon = statusIcon
 
 
 """Simple callback class, which can handle can store a given set of parameters.
