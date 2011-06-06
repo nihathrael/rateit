@@ -55,6 +55,24 @@ class GUI():
         aboutDialog.set_authors(["Thomas Kinnen","Moritz Beller"])
         aboutDialog.show()
 
+    def show_chat(self, widget, data = None):
+        connectDialog = gtk.Dialog("Connect To", None, gtk.DIALOG_DESTROY_WITH_PARENT, None)
+        connectDialog.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        connectDialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+
+        entry = gtk.Entry()
+        entry.show()
+        connectDialog.vbox.add(entry)
+
+        def ok(w, res):
+            if res == gtk.RESPONSE_OK:
+                connectDialog.hide()
+                self.send(entry.get_text())
+            elif res == gtk.RESPONSE_CANCEL:
+                connectDialog.hide()
+
+        connectDialog.connect("response", ok)
+        connectDialog.show()
 
     def show_connect(self, widget, data = None):
         connectDialog = gtk.Dialog("Connect To", None, gtk.DIALOG_DESTROY_WITH_PARENT, None)
@@ -95,7 +113,14 @@ class GUI():
             menuItem = gtk.MenuItem(str(curRating))
             menuItem.connect('activate', Callback(self.send, curRating))
             menu.append(menuItem)
-            
+
+        menuItem = gtk.SeparatorMenuItem()
+        menu.append(menuItem)
+
+        menuItem = gtk.MenuItem("Chat")
+        menuItem.connect('activate', self.show_chat, statusIcon)
+        menu.append(menuItem)
+
         menuItem = gtk.SeparatorMenuItem()
         menu.append(menuItem)
 
@@ -120,7 +145,7 @@ class GUI():
 
     def send(self, rating):
         print "SEND!"
-        self.client.send("[" + utils.settings.a.name + "] Rate: %s\n" % rating)
+        self.client.send(utils.settings.a.name + ": %s\n" % rating)
 
     def paint_icon(self):
         statusIcon = gtk.StatusIcon()
