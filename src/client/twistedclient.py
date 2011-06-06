@@ -12,6 +12,8 @@ import gui.guiutils
 
 import re
 
+import uuid 
+
 from  protocol.protocolstates import ProtocolState 
 
 class RateItClient(Protocol):
@@ -29,9 +31,9 @@ class RateItClient(Protocol):
         if self.curState == ProtocolState.CH_IN:
             gui.guiutils.GuiUtils.showNotification(data)
         elif self.curState == ProtocolState.CO_OK:
-            parser = re.compile("ID: (.*)")
-            match = parser.match(data)
-            self.id = match.group(1)
+            self.transport.write(str(self.id))
+            self.curState = ProtocolState.AUTH_OK
+        elif self.curState == ProtocolState.AUTH_OK:
             # pass on channel to join
             self.sendMessage("stabi")
             self.curState = ProtocolState.CH_SENT
@@ -41,6 +43,9 @@ class RateItClient(Protocol):
         
     def connectionMade(self):
         self.curState=ProtocolState.CO_OK
+        if self.id == None:
+            self.id = uuid.uuid1()
+        self.transport.write("UID: " + str(self.id))
         
     def connectionLost(self, reason):
         Protocol.connectionLost(self, reason=reason)

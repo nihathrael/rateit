@@ -8,7 +8,7 @@ from twisted.internet import reactor
 
 from  protocol.protocolstates import ProtocolState 
 
-import uuid 
+import re
 
 class LightWeightProtocol(Protocol):
     def __init__(self):
@@ -18,21 +18,24 @@ class LightWeightProtocol(Protocol):
           
     def connectionMade(self):
         self.curState=ProtocolState.CO_OK
-        self.id = uuid.uuid4()
-        self.transport.write("ID: " + str(self.id))
         print "And another successful connection established"
         
-    def checkId(self, message):
-        # UUID never has : as a character, so first : must be 
+    def extractData(self, message):    
+        (sid, a, data) = message.partition(':')
+        return data
+    
+    def isValidId(self, message):
+        # UUID never has : as a character, so first : must be delimiter
         (sid, a, text) = message.partition(':')
         if sid == str(self.id):
-            return text
+            return True
         else:
             return False
             
     def connectionLost(self, reason):
         # remove from channel and disconnect, reset state machine
-        self.factory.channels[self.channel].remove(self)
+        if self in self.factory.channels[self.channel]: 
+            self.factory.channels[self.channel].remove(self)
         if self.factory.channels[self.channel].count <= 0:
             del self.factory.channels[self.channel]
         self.curState=ProtocolState.CO_NO
@@ -54,13 +57,28 @@ class LightWeightProtocol(Protocol):
         if self.curState == ProtocolState.CO_NO:
             # disregard any incoming commands while not properly connected
             # (should never happen usually)
-            return
+            return        
+        elif self.curState == ProtocolState.CO_OK:
+            parser = re.compile("UID: (.*)")
+            match = parser.match(data)
+            self.id = match.group(1)
+            # TODO: check for id more closely
+            if self.id != '':
+                self.curState = ProtocolState.AUTH_OK
+                self.transport.write("AUTH OK, CHANNEL?")
+                return
+            else:
+                self.transport.loseConnection()
+                return
         
-        data = self.checkId(data)
-        if data == False:
+        # from now on, a handshaken UID is known to client and server
+        # all communication must be preceeded by this UID
+        if not self.isValidId(data):
+            self.transport.loseConnection()
             return
+        data = self.extractData(data)
         
-        if self.curState == ProtocolState.CO_OK:
+        if self.curState == ProtocolState.AUTH_OK:
             self.joinChannel(data)
             self.curState=ProtocolState.CH_IN
             self.transport.write("Joined channel " + data)

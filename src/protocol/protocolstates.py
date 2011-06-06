@@ -22,5 +22,6 @@ Nb. This essentially represent a three-way handshake.
 class ProtocolState:
     CO_NO=0
     CO_OK=1
-    CH_SENT=2
-    CH_IN=3
+    AUTH_OK=2
+    CH_SENT=3
+    CH_IN=4
