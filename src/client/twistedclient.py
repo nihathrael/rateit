@@ -70,7 +70,8 @@ class RateItFactory(ReconnectingClientFactory):
         self.obj.sendMessage(msg)
         
     def loseConnection(self):
-        self.obj.transport.loseConnection()
+        if self.obj.transport:
+            self.obj.transport.loseConnection()
                 
 
 class TwistedClient():
