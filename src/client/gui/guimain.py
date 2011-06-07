@@ -105,6 +105,13 @@ class GUI():
     def build_menu(self, statusIcon):
         menu = gtk.Menu()
 
+        menuItem = gtk.MenuItem("Missed It!")
+        menuItem.connect('activate', Callback(self.send, "Missed It!"))
+        menu.append(menuItem)
+        
+        menuItem = gtk.SeparatorMenuItem()
+        menu.append(menuItem)
+
         menuItem = gtk.MenuItem("xD")
         menuItem.connect('activate', Callback(self.send, "xD"))
         menu.append(menuItem)

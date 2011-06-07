@@ -10,8 +10,6 @@ import pynotify
 import utils.settings
 import gui.guiutils
 
-import re
-
 import uuid 
 
 from  protocol.protocolstates import ProtocolState 

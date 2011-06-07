@@ -47,6 +47,8 @@ class GuiUtils(object):
             iconUpdater.changeIcon("exciting.ico")
         elif string.find(text, '10') > -1:
             iconUpdater.changeIcon("money.ico")
+        elif string.find(text, 'Missed It!') > -1:
+            iconUpdater.changeIcon("cry.ico")
 
     DetermineAndSetNewIcon = staticmethod(DetermineAndSetNewIcon)
 
