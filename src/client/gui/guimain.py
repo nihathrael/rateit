@@ -94,6 +94,8 @@ class GUI():
                 connectDialog.hide()
                 utils.settings.a.server = entry.get_text()
                 utils.settings.a.channel = channel.get_text()
+                if utils.settings.a.channel == '':
+                    utils.settings.a.channel = 'default'
                 self.connect_to()
                 utils.settings.a.save_settings()
             elif res == gtk.RESPONSE_CANCEL:
@@ -152,9 +154,10 @@ class GUI():
         return menu
 
     def connect_to(self):
-        print "connect to"
+        if self.client:
+            self.client.quit()
+        print "calling connect to"
         reactor.callFromThread(self.client.connect)
-        print "connected"
 
     def send(self, rating):
         print "SEND!"

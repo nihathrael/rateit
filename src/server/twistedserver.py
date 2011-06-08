@@ -18,6 +18,7 @@ class LightWeightProtocol(Protocol):
           
     def connectionMade(self):
         self.curState=ProtocolState.CO_OK
+        self.transport.write("Connect ok")
         print "And another successful connection established"
         
     def extractData(self, message):    

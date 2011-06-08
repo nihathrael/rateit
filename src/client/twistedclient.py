@@ -29,7 +29,9 @@ class RateItClient(Protocol):
         if self.curState == ProtocolState.CH_IN:
             gui.guiutils.GuiUtils.showNotification(data)
         elif self.curState == ProtocolState.CO_OK:
-            self.transport.write(str(self.id))
+            if self.id == None:
+                self.id = uuid.uuid1()
+            self.transport.write("UID: " + str(self.id))
             self.curState = ProtocolState.AUTH_OK
         elif self.curState == ProtocolState.AUTH_OK:
             # pass on channel to join
@@ -41,9 +43,7 @@ class RateItClient(Protocol):
         
     def connectionMade(self):
         self.curState=ProtocolState.CO_OK
-        if self.id == None:
-            self.id = uuid.uuid1()
-        self.transport.write("UID: " + str(self.id))
+
         
     def connectionLost(self, reason):
         Protocol.connectionLost(self, reason=reason)
