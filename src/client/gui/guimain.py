@@ -83,12 +83,18 @@ class GUI():
         entry.set_text(utils.settings.a.server)
         entry.show()
         connectDialog.vbox.add(entry)
+        
+        channel = gtk.Entry()
+        channel.set_text(utils.settings.a.channel)
+        channel.show()
+        connectDialog.vbox.add(channel)
 
         def ok(w, res):
             if res == gtk.RESPONSE_OK:
                 connectDialog.hide()
                 utils.settings.a.server = entry.get_text()
-                self.connect_to(utils.settings.a.server)
+                utils.settings.a.channel = channel.get_text()
+                self.connect_to()
                 utils.settings.a.save_settings()
             elif res == gtk.RESPONSE_CANCEL:
                 connectDialog.hide()
@@ -145,9 +151,9 @@ class GUI():
 
         return menu
 
-    def connect_to(self, connect):
+    def connect_to(self):
         print "connect to"
-        reactor.callFromThread(self.client.connect,connect)
+        reactor.callFromThread(self.client.connect)
         print "connected"
 
     def send(self, rating):

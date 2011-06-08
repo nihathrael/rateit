@@ -33,7 +33,7 @@ class RateItClient(Protocol):
             self.curState = ProtocolState.AUTH_OK
         elif self.curState == ProtocolState.AUTH_OK:
             # pass on channel to join
-            self.sendMessage("stabi")
+            self.sendMessage(utils.settings.a.channel)
             self.curState = ProtocolState.CH_SENT
         elif self.curState == ProtocolState.CH_SENT:
             self.sendMessage(utils.settings.a.name + " joined RateIt!\r\n")
@@ -77,8 +77,8 @@ class TwistedClient():
         pynotify.init("RateIt Notifications")
         self.factory = RateItFactory()
 
-    def connect(self, url):
-        host, port = url.split(":")
+    def connect(self):
+        host, port = utils.settings.a.server.split(":")
         reactor.connectTCP(host, int(port), self.factory)
     
     # works via delegation        
