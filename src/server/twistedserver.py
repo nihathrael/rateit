@@ -40,6 +40,7 @@ class LightWeightProtocol(Protocol):
         if self.factory.channels[self.channel].count <= 0:
             del self.factory.channels[self.channel]
         self.curState=ProtocolState.CO_NO
+        self.factory.notifyObservers("A dude left the channel", self.channel)
         Protocol.connectionLost(self, reason=reason)
             
     def joinChannel(self, channelName):
