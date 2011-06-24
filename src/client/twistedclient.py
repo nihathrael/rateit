@@ -4,20 +4,19 @@ Created on 03.06.2011
 @author: moritz
 '''
 from twisted.internet import reactor
-from twisted.internet.protocol import Protocol, ReconnectingClientFactory
+from twisted.internet.protocol import Protocol, ClientFactory
 import pynotify
 
 import utils.settings
 import gui.guiutils
 
-import uuid 
 
 from  protocol.protocolstates import ProtocolState 
 
 class RateItClient(Protocol):
     def __init__(self):
         self.curState=ProtocolState.CO_NO
-        self.id=None
+        self.id=utils.settings.a.id
         
     def sendMessage(self, msg):
         if self.connected:
@@ -29,8 +28,6 @@ class RateItClient(Protocol):
         if self.curState == ProtocolState.CH_IN:
             gui.guiutils.GuiUtils.showNotification(data)
         elif self.curState == ProtocolState.CO_OK:
-            if self.id == None:
-                self.id = uuid.uuid1()
             self.transport.write("UID: " + str(self.id))
             self.curState = ProtocolState.AUTH_OK
         elif self.curState == ProtocolState.AUTH_OK:
@@ -53,14 +50,14 @@ class RateItClient(Protocol):
 # An implementation of a factory is needed as we need to store a reference 
 # to the actual RateItClient object, otherwise we won't be able to delegate 
 # method calls to it
-class RateItFactory(ReconnectingClientFactory):
+class RateItFactory(ClientFactory):
     protocol = RateItClient
     
     def __init__(self):
         self.obj = self.protocol()
     
     def buildProtocol(self, addr):
-        self.obj = ReconnectingClientFactory.buildProtocol(self, addr)
+        self.obj = ClientFactory.buildProtocol(self, addr)
         return self.obj
     
     # works via delegation

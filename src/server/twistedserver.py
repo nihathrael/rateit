@@ -9,6 +9,9 @@ from twisted.internet import reactor
 from  protocol.protocolstates import ProtocolState 
 
 import re
+import sqlite3
+
+from time import localtime,strftime
 
 class LightWeightProtocol(Protocol):
     def __init__(self):
@@ -87,12 +90,37 @@ class LightWeightProtocol(Protocol):
         elif self.curState == ProtocolState.CH_IN:
             # notify all observers of incoming event
             self.factory.notifyObservers(data, self.channel)
+            self.insertRatingToDB(data)
+    
+    def insertRatingToDB(self, data):
+        (name, a, text) = data.partition(':')
+        text = text.lstrip()
+        try: 
+            rating = int(text)
+        except ValueError:
+            if text == "xD":
+                rating = 2.5
+            else:
+                return 
+        if rating >=0 and rating <= 10:
+            try:
+                self.factory.dbcursor.execute( "INSERT INTO ratings VALUES (?, ?, ?, ?, ?)", ( strftime("%a, %d %b %Y %H:%M:%S", localtime()).decode('utf-8'), self.id.decode('utf-8'), name.decode('utf-8'), self.channel.decode('utf-8'), rating) )
+                self.factory.dbconnection.commit()
+            except sqlite3.OperationalError:
+                return
 
 class RateServerFactory(Factory):
     protocol = LightWeightProtocol
     
     def __init__(self):
         self.channels = {}
+        self.dbconnection = sqlite3.connect("rateit.db")
+        self.dbcursor = self.dbconnection.cursor()
+        self.dbcursor.execute("""CREATE TABLE IF NOT EXISTS ratings ( timestamp  TEXT, id  TEXT,  username  TEXT, channel  TEXT, rating  REAL)""")
+        
+    def __del__(self):
+        self.dbcursor.close()
+        self.dbconnection.close()
         
     def notifyObservers(self, data, channel):
         for aClient in self.channels[channel]:

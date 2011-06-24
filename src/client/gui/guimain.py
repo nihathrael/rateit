@@ -52,7 +52,7 @@ class GUI():
                     w.hide()
         aboutDialog.connect("response", close)
 
-        aboutDialog.set_authors(["Thomas Kinnen","Moritz Beller"])
+        aboutDialog.set_authors(["Moritz Beller","Thomas Kinnen"])
         aboutDialog.show()
 
     def show_chat(self, widget, data = None):
