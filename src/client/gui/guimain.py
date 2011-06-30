@@ -56,7 +56,7 @@ class GUI():
         aboutDialog.show()
 
     def show_chat(self, widget, data = None):
-        connectDialog = gtk.Dialog("Connect To", None, gtk.DIALOG_DESTROY_WITH_PARENT, None)
+        connectDialog = gtk.Dialog("Chat", None, gtk.DIALOG_DESTROY_WITH_PARENT, None)
         connectDialog.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         connectDialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
 
