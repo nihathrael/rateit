@@ -63,6 +63,7 @@ class GUI():
         entry = gtk.Entry()
         entry.show()
         connectDialog.vbox.add(entry)
+        
 
         def ok(w, res):
             if res == gtk.RESPONSE_OK:
@@ -70,7 +71,12 @@ class GUI():
                 self.send(entry.get_text())
             elif res == gtk.RESPONSE_CANCEL:
                 connectDialog.hide()
+                
+        def keypress(w, res):
+                if res.keyval == 65293:
+                    ok(w, gtk.RESPONSE_OK)
 
+        connectDialog.connect("key_press_event", keypress)
         connectDialog.connect("response", ok)
         connectDialog.show()
 
@@ -100,7 +106,12 @@ class GUI():
                 utils.settings.a.save_settings()
             elif res == gtk.RESPONSE_CANCEL:
                 connectDialog.hide()
+                
+        def keypress(w, res):
+            if res.keyval == 65293:
+                ok(w, gtk.RESPONSE_OK)
 
+        connectDialog.connect("key_press_event", keypress)
         connectDialog.connect("response", ok)
         connectDialog.show()
 
